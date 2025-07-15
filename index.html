@@ -30,6 +30,11 @@
             margin-bottom: 5px;
             font-weight: bold;
         }
+        .hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
         input[type="text"], textarea {
             width: 100%;
             padding: 10px;
@@ -77,8 +82,9 @@
         <h1>挪车消息推送</h1>
 
         <div class="form-group">
-            <label for="phone">车主手机号码：</label>
-            <input type="text" id="phone" placeholder="请输入车主手机号码">
+            <label for="phone">您的手机号码（可选）：</label>
+            <input type="text" id="phone" placeholder="请输入您的手机号码">
+            <div class="hint">请输入您的手机号码，便于车主联系。也可直接推送消息给车主，但车主将无法联系您。</div>
         </div>
 
         <div class="form-group">
@@ -94,21 +100,19 @@
     <script>
         document.getElementById('sendBtn').addEventListener('click', function() {
             const phone = document.getElementById('phone').value.trim();
-            const message = document.getElementById('message').value.trim();
+            let message = document.getElementById('message').value.trim();
             const statusDiv = document.getElementById('status');
-
-            // 验证手机号
-            if (!phone) {
-                statusDiv.textContent = '请输入车主手机号码';
-                statusDiv.className = 'status error';
-                return;
-            }
 
             // 验证消息
             if (!message) {
                 statusDiv.textContent = '请输入挪车消息内容';
                 statusDiv.className = 'status error';
                 return;
+            }
+
+            // 如果有手机号，添加到消息中
+            if (phone) {
+                message += `\n\n我的联系电话：${phone}`;
             }
 
             // 完整的推送URL
@@ -121,7 +125,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    statusDiv.textContent = '挪车消息已成功发送！';
+                    statusDiv.textContent = '挪车消息已成功发送！' + (phone ? '（已包含您的联系方式）' : '');
                     statusDiv.className = 'status success';
                 } else {
                     throw new Error('推送失败');
