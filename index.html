@@ -121,7 +121,8 @@
 
             // 发送请求
             fetch(pushUrl, {
-                method: 'GET'
+                method: 'GET',
+        mode: 'no-cors'
             })
             .then(response => {
                 if (response.ok) {
