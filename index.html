@@ -123,18 +123,6 @@
             fetch(pushUrl, {
                 method: 'GET',
         mode: 'no-cors'
-            })
-            .then(response => {
-                if (response.ok) {
-                    statusDiv.textContent = '挪车消息已成功发送！' + (phone ? '（已包含您的联系方式）' : '');
-                    statusDiv.className = 'status success';
-                } else {
-                    throw new Error('推送失败');
-                }
-            })
-            .catch(error => {
-                statusDiv.textContent = '推送失败，请稍后再试: ' + error.message;
-                statusDiv.className = 'status error';
             });
         });
     </script>
