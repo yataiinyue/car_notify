@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>挪车消息推送</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            display: block;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>挪车消息推送</h1>
+
+        <div class="form-group">
+            <label for="phone">车主手机号码：</label>
+            <input type="text" id="phone" placeholder="请输入车主手机号码">
+        </div>
+
+        <div class="form-group">
+            <label for="message">挪车消息内容：</label>
+            <textarea id="message">拜托挪一下车，谢谢！</textarea>
+        </div>
+
+        <button id="sendBtn">发送挪车请求</button>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        document.getElementById('sendBtn').addEventListener('click', function() {
+            const phone = document.getElementById('phone').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const statusDiv = document.getElementById('status');
+
+            // 验证手机号
+            if (!phone) {
+                statusDiv.textContent = '请输入车主手机号码';
+                statusDiv.className = 'status error';
+                return;
+            }
+
+            // 验证消息
+            if (!message) {
+                statusDiv.textContent = '请输入挪车消息内容';
+                statusDiv.className = 'status error';
+                return;
+            }
+
+            // 完整的推送URL
+            const barkUrl = 'https://bark.wangjiahui.org:9443/BohXggvFzLTAyk3mvGTfMR';
+            const pushUrl = `${barkUrl}/${encodeURIComponent(message)}?sound=minuet&group=挪车通知&icon=https://cdn.jsdelivr.net/gh/whyour/qinglong@master/public/images/ql.png`;
+
+            // 发送请求
+            fetch(pushUrl, {
+                method: 'GET'
+            })
+            .then(response => {
+                if (response.ok) {
+                    statusDiv.textContent = '挪车消息已成功发送！';
+                    statusDiv.className = 'status success';
+                } else {
+                    throw new Error('推送失败');
+                }
+            })
+            .catch(error => {
+                statusDiv.textContent = '推送失败，请稍后再试: ' + error.message;
+                statusDiv.className = 'status error';
+            });
+        });
+    </script>
+</body>
+</html>
